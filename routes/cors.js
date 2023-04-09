@@ -1,17 +1,18 @@
-const express = require('express')
-const cors = require('cors')
+const express = require("express");
+const cors = require("cors");
 
 // Allowed client URLs
-const whitelist = ['http://localhost:5000', 'http://localhost:3000', 'https://vproject-t.herokuapp.com']
-var corsOptionsDelegate = (req, callback) => {
-	var corsOptions
-	if (whitelist.indexOf(req.header('Origin')) !== -1) {
-		corsOptions = { origin: true }
-	} else {
-		corsOptions = { origin: false }
-	}
-	callback(null, corsOptions)
-}
+const whitelist = [process.env.clientURL];
 
-exports.cors = cors()
-exports.corsWithOptions = cors(corsOptionsDelegate)
+var corsOptionsDelegate = (req, callback) => {
+  var corsOptions;
+  if (whitelist.indexOf(req.header("Origin")) !== -1) {
+    corsOptions = { origin: true };
+  } else {
+    corsOptions = { origin: false };
+  }
+  callback(null, corsOptions);
+};
+
+exports.cors = cors();
+exports.corsWithOptions = cors(corsOptionsDelegate);
