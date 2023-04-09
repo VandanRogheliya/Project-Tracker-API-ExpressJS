@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/", indexRouter);
+app.use("/api", indexRouter);
 app.use("/api/users", usersRouter);
 
 // Serving static files
