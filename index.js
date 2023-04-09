@@ -71,4 +71,10 @@ app.use(function (err, req, res, next) {
   res.json({ err });
 });
 
-module.exports = app;
+const port = process.env.PORT || 8080;
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+});
+
+// module.exports = app;
