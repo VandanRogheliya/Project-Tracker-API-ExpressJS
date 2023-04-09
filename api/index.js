@@ -1,74 +1,86 @@
-require("dotenv").config();
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var logger = require("morgan");
-const mongoose = require("mongoose");
-const passport = require("passport");
-const config = require("../config");
+#!/usr/bin/env node
 
-// Routes
-var indexRouter = require("../routes/index");
-var usersRouter = require("../routes/users");
-var commentRouter = require("../routes/commentRouter");
-var issueRouter = require("../routes/issueRouter");
-var organizationRouter = require("../routes/organizationRouter");
-var projectRouter = require("../routes/projectRouter");
-var requestRouter = require("../routes/requestRouter");
+/**
+ * Module dependencies.
+ */
 
-var app = express();
+var app = require('../app')
+var debug = require('debug')('project:server')
+var http = require('http')
 
-// view engine setup
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "jade");
+/**
+ * Get port from environment and store in Express.
+ */
 
-app.use(logger("dev"));
-app.use(express.json({ extended: false }));
-app.use(express.urlencoded({ extended: false }));
+var port = normalizePort(process.env.PORT || '8080')
+app.set('port', port)
 
-app.use(passport.initialize());
-app.use(passport.session());
+/**
+ * Create HTTP server.
+ */
 
-app.use("/api", indexRouter);
-app.use("/api/users", usersRouter);
+var server = http.createServer(app)
 
-// Serving static files
-app.use(express.static(path.join(__dirname, "public")));
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-// Setup for mongoDB connection
-const url = config.mongoUrl;
-const connectDB = mongoose.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+server.listen(port)
+server.on('error', onError)
+server.on('listening', onListening)
 
-//Routs
-app.use("/api/comments", commentRouter);
-app.use("/api/issues", issueRouter);
-app.use("/api/organizations", organizationRouter);
-app.use("/api/projects", projectRouter);
-app.use("/api/requests", requestRouter);
+/**
+ * Normalize a port into a number, string, or false.
+ */
 
-// Connecting to MongoDB
-connectDB.then(
-  (db) => console.log("Connected to MongoDB!"),
-  (err) => console.log(err)
-);
+function normalizePort(val) {
+	var port = parseInt(val, 10)
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+	if (isNaN(port)) {
+		// named pipe
+		return val
+	}
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+	if (port >= 0) {
+		// port number
+		return port
+	}
 
-  // render the error page
-  res.status(err.status || 500);
-  res.json({ err });
-});
+	return false
+}
 
-module.exports = app;
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+	if (error.syscall !== 'listen') {
+		throw error
+	}
+
+	var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+
+	// handle specific listen errors with friendly messages
+	switch (error.code) {
+		case 'EACCES':
+			console.error(bind + ' requires elevated privileges')
+			process.exit(1)
+			break
+		case 'EADDRINUSE':
+			console.error(bind + ' is already in use')
+			process.exit(1)
+			break
+		default:
+			throw error
+	}
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+	var addr = server.address()
+	var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
+	debug('Listening on ' + bind)
+}
