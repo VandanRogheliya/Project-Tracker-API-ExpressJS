@@ -20,10 +20,10 @@ var app = express();
 
 // view engine setup
 // app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+// app.set("view engine", "jade");
 
 app.use(logger("dev"));
-app.use(express.json());
+app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
@@ -68,7 +68,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({ err });
 });
 
 module.exports = app;
