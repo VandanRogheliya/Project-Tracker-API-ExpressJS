@@ -5,16 +5,16 @@ var path = require("path");
 var logger = require("morgan");
 const mongoose = require("mongoose");
 const passport = require("passport");
-const config = require("./config");
+const config = require("../config");
 
 // Routes
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var commentRouter = require("./routes/commentRouter");
-var issueRouter = require("./routes/issueRouter");
-var organizationRouter = require("./routes/organizationRouter");
-var projectRouter = require("./routes/projectRouter");
-var requestRouter = require("./routes/requestRouter");
+var indexRouter = require("../routes/index");
+var usersRouter = require("../routes/users");
+var commentRouter = require("../routes/commentRouter");
+var issueRouter = require("../routes/issueRouter");
+var organizationRouter = require("../routes/organizationRouter");
+var projectRouter = require("../routes/projectRouter");
+var requestRouter = require("../routes/requestRouter");
 
 var app = express();
 
